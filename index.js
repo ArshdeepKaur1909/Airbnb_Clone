@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const path = require("path");
+const ejsMate = require("ejs-mate"); // This package in npm is used to create common layouts that can be used in different ejs pages
 const mongoose = require("mongoose");
 const Listing = require("./models/listings.js");
 
@@ -18,10 +19,13 @@ async function main(){
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.use(express.urlencoded(( {extended: true} )));
+app.use(express.static(path.join(__dirname, "public")));
+app.engine("ejs", ejsMate);
 
 app.get("/listings", async (req, res) => {
   const Listings = await Listing.find();
-  res.render("/listings/mainPage.ejs", {Listings});
+  res.render("listings/index.ejs", {Listings});
 });
 
 app.listen(8080, () => {
