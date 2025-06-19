@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const path = require("path");
 const mongoose = require("mongoose");
 const Listing = require("./models/listings.js");
 
@@ -15,10 +16,12 @@ async function main(){
     await mongoose.connect('mongodb://127.0.0.1:27017/airBnb');
 }
 
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
 app.get("/listings", async (req, res) => {
   const Listings = await Listing.find();
-  console.log(Listings);
-  res.render("mainPage.ejs", {Listings});
+  res.render("/listings/mainPage.ejs", {Listings});
 });
 
 app.listen(8080, () => {
