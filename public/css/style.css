@@ -1,4 +1,13 @@
 a{
-    color: black;
+    color: #222222 !important;
     text-decoration: none;
+}
+.navbar{
+    height: 5rem;
+    background-color: #ffffff !important;
+    font-size: 1.3rem;
+}
+.fa-compass{
+    color: rgba(240, 41, 27);
+    font-size: 2rem;
 }

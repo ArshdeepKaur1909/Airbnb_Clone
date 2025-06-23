@@ -28,6 +28,10 @@ app.get("/listings", async (req, res) => {
   res.render("listings/index.ejs", {Listings});
 });
 
+app.get("/listings/add", function(req, res){ 
+  res.render("listings/addForm.ejs");
+});
+
 app.listen(8080, () => {
     console.log("Started Listening At port 8080");
 });
