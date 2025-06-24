@@ -2,6 +2,8 @@ a{
     color: #222222 !important;
     text-decoration: none;
 }
+
+/* header */
 .navbar{
     height: 5rem;
     background-color: #ffffff !important;
@@ -10,4 +12,37 @@ a{
 .fa-compass{
     color: rgba(240, 41, 27);
     font-size: 2rem;
+}
+
+/* footer */
+footer{
+    padding: 20px 0px 10px;
+}
+.f-info{
+    height: 10rem;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    background-color: #ebebeb;
+}
+.f-info-socials, .f-info-brand, .f-info-links{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+.f-info-socials i{
+    font-size: 1.2rem;
+    margin-right: 0.7rem;
+}
+.f-info-brand{
+    font-size: 1rem;
+    font-weight: 500;
+}
+.f-info-links a{
+    font-size: 1rem;
+    font-weight: 600;
 }
