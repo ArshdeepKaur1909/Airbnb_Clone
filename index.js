@@ -23,14 +23,22 @@ app.use(express.urlencoded(( {extended: true} )));
 app.use(express.static(path.join(__dirname, "public")));
 app.engine("ejs", ejsMate);
 
+// REQUEST FOR LISTING DOWN ALL LOCATIONS IN DATABASE
 app.get("/listings", async (req, res) => {
   const Listings = await Listing.find();
   res.render("listings/index.ejs", {Listings});
 });
 
-app.get("/listings/add", function(req, res){ 
+// REQUEST FOR PROVIDING A FORM FOR ADDING NEW LOCATION
+app.get("/listings/new", function(req, res){ 
   res.render("listings/addForm.ejs");
 });
+
+// REQUEST FOR SHOWING PARTICULAR LISTING DETAIL ON CLICKING IT
+app.get("/listing/:id", () => {
+  res.render("listings/show.ejs");
+});
+
 
 app.listen(8080, () => {
     console.log("Started Listening At port 8080");
