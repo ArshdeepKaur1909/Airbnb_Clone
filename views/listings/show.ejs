@@ -7,7 +7,9 @@
     <p class="card-text"><small class="text-body-secondary">&#8377;<%= listing.price%></small></p>
     <p class="card-text"><small class="text-body-secondary"><%= listing.location%></small></p>
     <p class="card-text"><small class="text-body-secondary"><%= listing.country%></small></p>
-    <a href="/listing/<%= listing._id%>/edit" class="btn text-body-secondary">Edit</a>
-    <a href="#" class="btn text-body-secondary">Delete</a>
+    <div class="show-buttons">
+      <a href="/listing/<%= listing._id%>/edit" class="btn text-body-secondary">Edit</a>
+      <form  method="post" action="/listing/<%= listing._id%>?_method=DELETE"><button class="btn text-body-secondary">Delete</button></form>
+    </div>
   </div>
 </div>

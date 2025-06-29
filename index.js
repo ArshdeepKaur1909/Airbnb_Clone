@@ -59,9 +59,18 @@ app.get("/listing/:id/edit", async (req, res) => {
 });
 
 // REQUEST FOR REDIRECTING TO SHOW.EJS PAGE AFTER EDITING
-app.put("/listing/:id", (req, res) => {
-  
-})
+app.put("/listing/:id", async (req, res) => {
+  const {id: Id} = req.params;
+  const listing = await Listing.findByIdAndUpdate(Id, req.body.listing);
+  res.redirect("/listings");
+});
+
+// REQUEST FOR DELETING A PARTICULAR LOCATION
+app.delete("/listing/:id", async (req, res) => {
+  const {id: Id} = req.params;
+  await Listing.findByIdAndDelete(Id);
+  res.redirect("/listings");
+});
 
 app.listen(8080, () => {
     console.log("Started Listening At port 8080");
