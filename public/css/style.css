@@ -1,12 +1,13 @@
 body{
   font-family: "Plus Jakarta Sans", sans-serif !important;
   font-style: normal !important;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
-a{
-    color: #222222 !important;
-    text-decoration: none;
+.container{
+    flex: 1;
 }
-
 /* header */
 .navbar{
     height: 5rem;
@@ -14,7 +15,7 @@ a{
     font-size: 1.3rem;
 }
 .fa-compass{
-    color: rgba(240, 41, 27);
+    color: #fe424d;
     font-size: 2rem;
 }
 
@@ -57,15 +58,15 @@ main{
 }
 .row{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
 }
 .row a{
     text-decoration: none;
+    margin: 2rem 0rem;
+    width: 21rem;
 }
 .card{
     border: none;
-    margin: 4rem 1rem;
-    width: 21rem;
 }
 .card img{
     width: 100% !important;
@@ -86,4 +87,11 @@ main{
 }
 .card-title{
     font-size: 1.8rem;
+}
+
+/* Add Form */
+.add-btn{
+    background-color: #fe424d !important;
+    color: #222222;
+    font-weight: 500;
 }
