@@ -73,6 +73,7 @@ main{
     height: 20rem;
     border-radius: 1rem;
     object-fit: cover !important;
+    margin: 1rem 0rem;
 }
 .card-img-overlay{
     opacity: 0;
@@ -90,8 +91,17 @@ main{
 }
 
 /* Add Form */
-.add-btn{
+.btn{
     background-color: #fe424d !important;
-    color: #222222;
+    color: black;
+    font-weight: 500;
+}
+
+/* Show Page */
+.description{
+  font-size: 1.2rem;  
+}
+.text-body-secondary{
+    font-size: 1rem;
     font-weight: 500;
 }

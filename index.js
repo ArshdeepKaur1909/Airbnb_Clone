@@ -35,10 +35,11 @@ app.get("/listings/new", function(req, res){
 });
 
 // REQUEST FOR SHOWING PARTICULAR LISTING DETAIL ON CLICKING IT
-app.get("/listing/:id", () => {
-  res.render("listings/show.ejs");
+app.get("/listing/:id", async (req, res) => {
+  const {id: Id} = req.params;
+  const listing = await Listing.findById(Id.toString());
+  res.render("listings/show.ejs", { listing });
 });
-
 
 app.listen(8080, () => {
     console.log("Started Listening At port 8080");
