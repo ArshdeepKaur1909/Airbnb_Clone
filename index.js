@@ -5,6 +5,8 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate"); // This package in npm is used to create common layouts that can be used in different ejs pages
 const mongoose = require("mongoose");
 const Listing = require("./models/listings.js");
+const wrapAsync = require("./utils/wrapAsync.js");
+const ExpressError = require("./utils/ExpressError.js");
 
 main()
 .then( (result) => {
@@ -26,10 +28,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(methodOverride("_method"));
 
 // REQUEST FOR LISTING DOWN ALL LOCATIONS IN DATABASE
-app.get("/listings", async (req, res) => {
+app.get("/listings", wrapAsync(async (req, res) => {
   const Listings = await Listing.find();
   res.render("listings/index.ejs", {Listings});
-});
+}));
 
 
 // REQUEST FOR PROVIDING A FORM FOR ADDING NEW LOCATION
@@ -38,38 +40,53 @@ app.get("/listings/new", function(req, res){
 });
 
 // REQUEST FOR ADDING NEW LOCATION IN DATABASE AND REDIRECTING AFTER THIS 
-app.post("/listings", (req, res) => {
+app.post("/listings", wrapAsync(async (req, res) => {
+  if( !req.body ){
+  // if request body not present with request --> this is error from client-side
+   return next(new ExpressError(400, "Error from client-side"));
+  }
   const newListing = new Listing(req.body.listing);
-  newListing.save();
+  await newListing.save();
   res.redirect("/listings");
-})
+}));
 
 // REQUEST FOR SHOWING PARTICULAR LISTING DETAIL ON CLICKING IT
-app.get("/listing/:id", async (req, res) => {
+app.get("/listings/:id", wrapAsync(async (req, res) => {
   const {id: Id} = req.params;
   const listing = await Listing.findById(Id.toString());
   res.render("listings/show.ejs", { listing });
-});
+}));
 
 // REQUEST FOR PROVIDING FORM FOR EDITING LISTING DETAILS
-app.get("/listing/:id/edit", async (req, res) => {
+app.get("/listings/:id/edit", wrapAsync(async (req, res) => {
   let { id: Id } = req.params;
   const listing = await Listing.findById(Id.toString());
   res.render("listings/editForm.ejs", { listing }); 
-});
+}));
 
 // REQUEST FOR REDIRECTING TO SHOW.EJS PAGE AFTER EDITING
-app.put("/listing/:id", async (req, res) => {
+app.put("/listings/:id", wrapAsync(async (req, res) => {
   const {id: Id} = req.params;
   const listing = await Listing.findByIdAndUpdate(Id, req.body.listing);
   res.redirect("/listings");
-});
+}));
 
 // REQUEST FOR DELETING A PARTICULAR LOCATION
-app.delete("/listing/:id", async (req, res) => {
+app.delete("/listings/:id", wrapAsync(async (req, res) => {
   const {id: Id} = req.params;
   await Listing.findByIdAndDelete(Id);
   res.redirect("/listings");
+}));
+
+// MIDDLEWARE FOR HANDLING RANDOM REQUESTS ON SERVER
+app.all(/.*/, (req, res, next) => {
+  next(new ExpressError(404, "Page not found"));
+});
+
+// ERROR HANDLING MIDDLEWARE
+app.use( (err, req, res, next) => {
+  const {statusCode = 500, message = "Error Occured"} = err;
+  res.status(statusCode).render("error.ejs", { message });
 });
 
 app.listen(8080, () => {
