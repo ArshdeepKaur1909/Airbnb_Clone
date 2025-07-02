@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const Listing = require("./models/listings.js");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
+const { listingsSchema } = require("./schema.js");
 
 main()
 .then( (result) => {
@@ -27,6 +28,15 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(methodOverride("_method"));
 
+// CREATING A MIDDLEWARE FOR HANDLING LISTING'S SCHEMA VALIDATION
+const validateSchema = (req, res, next) => {
+  const { error } = listingsSchema.validate(req.body);
+  console.log(listingsSchema.validate(req.body));
+  if( error ){
+    throw new ExpressError(400, error);
+  }
+};
+
 // REQUEST FOR LISTING DOWN ALL LOCATIONS IN DATABASE
 app.get("/listings", wrapAsync(async (req, res) => {
   const Listings = await Listing.find();
@@ -40,11 +50,17 @@ app.get("/listings/new", function(req, res){
 });
 
 // REQUEST FOR ADDING NEW LOCATION IN DATABASE AND REDIRECTING AFTER THIS 
-app.post("/listings", wrapAsync(async (req, res) => {
-  if( !req.body ){
-  // if request body not present with request --> this is error from client-side
-   return next(new ExpressError(400, "Error from client-side"));
-  }
+app.post("/listings", validateSchema, wrapAsync(async (req, res) => {
+  // no need of this as we are passing a middleware handling schema validation errors
+  // const result = listingsSchema.validate(req.body);
+  // if( result.error ){
+  //   throw new ExpressError(400, result.error);
+  // }
+
+  // if( !req.body ){
+  // // if request body not present with request --> this is error from client-side
+  //   throw new ExpressError(400, "Error from client-side");
+  // }
   const newListing = new Listing(req.body.listing);
   await newListing.save();
   res.redirect("/listings");
@@ -68,7 +84,7 @@ app.get("/listings/:id/edit", wrapAsync(async (req, res) => {
 app.put("/listings/:id", wrapAsync(async (req, res) => {
   const {id: Id} = req.params;
   const listing = await Listing.findByIdAndUpdate(Id, req.body.listing);
-  res.redirect("/listings");
+  res.redirect(`/listings/${Id}`);
 }));
 
 // REQUEST FOR DELETING A PARTICULAR LOCATION
