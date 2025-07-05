@@ -1,6 +1,7 @@
 // USING JOI HERE IN ORDER TO HANDLE SCHEMA VALIDATION ERROR WHEN NEW ENTRY WILL BE ADDED IN LISTINGS
 const Joi = require("joi");
 
+// SCHEMA DEFINED FOR UPCOMING DATA FOR GETTING STORED IN LISTING COLLECTION
 module.exports.listingsSchema = Joi.object({
  listing: Joi.object({
      title: Joi.string().required(),
@@ -10,3 +11,12 @@ module.exports.listingsSchema = Joi.object({
      location: Joi.string().required(),
  }).required()
 });
+
+// SCHEMA DEFINED FOR UPCOMING DATA FOR GETTING STORED IN REVIEW COLLECTION
+module.exports.reviewsSchema = Joi.object({
+    review: Joi.object({
+        rating: Joi.string().required().min(1).max(5),
+        comment: Joi.string().required(),
+    }).required()
+});
+

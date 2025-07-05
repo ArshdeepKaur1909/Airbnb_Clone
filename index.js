@@ -8,7 +8,7 @@ const Listing = require("./models/listings.js");
 const Review = require("./models/review.js");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
-const { listingsSchema } = require("./schema.js");
+const { listingsSchema, reviewsSchema } = require("./schema.js");
 
 main()
 .then( (result) => {
@@ -30,13 +30,21 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(methodOverride("_method"));
 
 // CREATING A MIDDLEWARE FOR HANDLING LISTING'S SCHEMA VALIDATION
-const validateSchema = (req, res, next) => {
+const validateListing = (req, res, next) => {
   const { error } = listingsSchema.validate(req.body);
   console.log(listingsSchema.validate(req.body));
   if( error ){
     throw new ExpressError(400, error);
   }
 };
+
+// CREATING A MIDDLEWARE FOR HANDLING REVIEW'S SCHEMA VALIDATION
+const validateReview = (req, res, next) => {
+  const { error } = reviewsSchema.validate(req.body);
+  if( error ){
+    throw new ExpressError(400, error);
+  }
+}
 
 // REQUEST FOR LISTING DOWN ALL LOCATIONS IN DATABASE
 app.get("/listings", wrapAsync(async (req, res) => {
@@ -51,7 +59,7 @@ app.get("/listings/new", function(req, res){
 });
 
 // REQUEST FOR ADDING NEW LOCATION IN DATABASE AND REDIRECTING AFTER THIS 
-app.post("/listings", validateSchema, wrapAsync(async (req, res) => {
+app.post("/listings", validateListing, wrapAsync(async (req, res) => {
   // no need of this as we are passing a middleware handling schema validation errors
   // const result = listingsSchema.validate(req.body);
   // if( result.error ){
@@ -96,7 +104,7 @@ app.delete("/listings/:id", wrapAsync(async (req, res) => {
 }));
 
 // REQUEST FOR HANDLING REVIEWS FOR A PARTICULAR LISTING
-app.post("/listings/:id/reviews", wrapAsync( async (req, res) => {
+app.post("/listings/:id/reviews", validateReviews, wrapAsync( async (req, res) => {
   const listing = await Listing.findById(req.params.id);
   const review = new Review(req.body.review);
 
