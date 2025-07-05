@@ -5,6 +5,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate"); // This package in npm is used to create common layouts that can be used in different ejs pages
 const mongoose = require("mongoose");
 const Listing = require("./models/listings.js");
+const Review = require("./models/review.js");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 const { listingsSchema } = require("./schema.js");
@@ -92,6 +93,19 @@ app.delete("/listings/:id", wrapAsync(async (req, res) => {
   const {id: Id} = req.params;
   await Listing.findByIdAndDelete(Id);
   res.redirect("/listings");
+}));
+
+// REQUEST FOR HANDLING REVIEWS FOR A PARTICULAR LISTING
+app.post("/listings/:id/reviews", wrapAsync( async (req, res) => {
+  const listing = await Listing.findById(req.params.id);
+  const review = new Review(req.body.review);
+
+  listing.reviews.push(review);
+
+  await review.save();
+  await listing.save();
+
+  res.redirect(`/listings/${req.params.id}`);
 }));
 
 // MIDDLEWARE FOR HANDLING RANDOM REQUESTS ON SERVER

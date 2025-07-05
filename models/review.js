@@ -10,7 +10,7 @@ const reviewSchema = new Schema({
     },
     created_at: {
         type: Date,
-        default: Date.now(),
+        default: new Date().toDateString(),
     }
 });
 
