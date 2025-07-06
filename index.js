@@ -78,7 +78,7 @@ app.post("/listings", validateListing, wrapAsync(async (req, res) => {
 // REQUEST FOR SHOWING PARTICULAR LISTING DETAIL ON CLICKING IT
 app.get("/listings/:id", wrapAsync(async (req, res) => {
   const {id: Id} = req.params;
-  const listing = await Listing.findById(Id.toString());
+  const listing = await Listing.findById(Id.toString()).populate("reviews");
   res.render("listings/show.ejs", { listing });
 }));
 
@@ -104,16 +104,18 @@ app.delete("/listings/:id", wrapAsync(async (req, res) => {
 }));
 
 // REQUEST FOR HANDLING REVIEWS FOR A PARTICULAR LISTING
-app.post("/listings/:id/reviews", validateReviews, wrapAsync( async (req, res) => {
+app.post("/listings/:id/reviews", validateReview, wrapAsync( async (req, res) => {
   const listing = await Listing.findById(req.params.id);
   const review = new Review(req.body.review);
 
-  listing.reviews.push(review);
+  listing.reviews.push(review._id);
 
   await review.save();
   await listing.save();
 
-  res.redirect(`/listings/${req.params.id}`);
+  console.log(review);
+
+  res.redirect(`/listings/${listing._id}`);
 }));
 
 // MIDDLEWARE FOR HANDLING RANDOM REQUESTS ON SERVER

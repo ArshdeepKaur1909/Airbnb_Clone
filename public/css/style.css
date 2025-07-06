@@ -65,9 +65,9 @@ main{
     margin: 2rem 0rem;
     width: 21rem;
 }
-.card{
+/* .card{
     border: none;
-}
+} */
 .card img{
     width: 100% !important;
     height: 20rem;
@@ -108,4 +108,17 @@ main{
 .show-buttons{
     display: flex;
     gap: 1rem;
+}
+.review{
+  margin: 2rem 0 2rem; 
+}
+.reviews .card{
+  border: 1px solid;
+}
+.reviews .card-body{
+    padding: 10px;
+}
+.fa-star{
+    font-size: 15px;
+    margin-right: 0.5rem;
 }
