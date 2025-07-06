@@ -15,8 +15,8 @@ module.exports.listingsSchema = Joi.object({
 // SCHEMA DEFINED FOR UPCOMING DATA FOR GETTING STORED IN REVIEW COLLECTION
 module.exports.reviewsSchema = Joi.object({
     review: Joi.object({
-        rating: Joi.string().required().min(1).max(5),
         comment: Joi.string().required(),
+        rating: Joi.number().required().min(1).max(5),
     }).required()
 });
 

@@ -78,7 +78,8 @@ app.post("/listings", validateListing, wrapAsync(async (req, res) => {
 // REQUEST FOR SHOWING PARTICULAR LISTING DETAIL ON CLICKING IT
 app.get("/listings/:id", wrapAsync(async (req, res) => {
   const {id: Id} = req.params;
-  const listing = await Listing.findById(Id.toString()).populate("reviews");
+  const listing = await Listing.findById(Id).populate("reviews");
+  console.log(listing);
   res.render("listings/show.ejs", { listing });
 }));
 
@@ -116,6 +117,15 @@ app.post("/listings/:id/reviews", validateReview, wrapAsync( async (req, res) =>
   console.log(review);
 
   res.redirect(`/listings/${listing._id}`);
+}));
+
+// REQUEST FOR DELETION OF REVIEW ASSOCIATED WITH THAT DELETE BUTTON
+app.delete("/listings/:id/reviews/:reviewId", wrapAsync( async (req, res) => {
+  const {id: Id1, reviewId: Id2} = req.params;
+  await Listing.findByIdAndUpdate(Id1, { $pull: { reviews: Id2 } });
+  await Review.findByIdAndDelete(Id2);
+
+  res.redirect(`/listings/${Id1}`);
 }));
 
 // MIDDLEWARE FOR HANDLING RANDOM REQUESTS ON SERVER

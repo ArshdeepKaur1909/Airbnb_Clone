@@ -35,6 +35,7 @@
              <% for (let i = 1; i<= review.rating; i++) {%>
               <i class="fa-solid fa-star"></i>
              <% } %>
+             <form method="post" action="/listings/<%= listing._id%>/reviews/<%= review._id%>?_method=DELETE"><button class="btn text-body-secondary" type="submit">Delete</button></form>
           </div>
         <% } %>
         </div>
