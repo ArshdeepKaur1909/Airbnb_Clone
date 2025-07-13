@@ -45,6 +45,7 @@ app.use(session( sessionOptions )); //Middleware for handling sessions on websit
 app.use(flash());
 app.use( (req, res, next) => {
   res.locals.successMsg = req.flash("success");
+  res.locals.errorMsg = req.flash("error");
   next();
 });
 
@@ -60,7 +61,6 @@ app.all(/.*/, (req, res, next) => {
 app.use( (err, req, res, next) => {
   const {statusCode = 500, message = "Error Occured"} = err;
   res.status(statusCode).render("error.ejs", { message });
-  next();
 });
 
 app.listen(8080, () => {

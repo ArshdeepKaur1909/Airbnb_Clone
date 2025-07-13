@@ -12,6 +12,7 @@ const validateReview = (req, res, next) => {
   if( error ){
     throw new ExpressError(400, error);
   }
+  next();
 }
 
 // REQUEST FOR HANDLING REVIEWS FOR A PARTICULAR LISTING
@@ -24,9 +25,8 @@ router.post("/", validateReview, wrapAsync( async (req, res) => {
 
   await review.save();
   await listing.save();
-
-  console.log(review);
-
+  
+  req.flash("success", "Review is added successfully");
   res.redirect(`/listings/${listing._id}`);
 }));
 
@@ -36,6 +36,7 @@ router.delete("/:reviewId", wrapAsync( async (req, res) => {
   await Listing.findByIdAndUpdate(Id1, { $pull: { reviews: Id2 } });
   await Review.findByIdAndDelete(Id2);
 
+  req.flash("success", "Review is deleted successfully");
   res.redirect(`/listings/${Id1}`);
 }));
 

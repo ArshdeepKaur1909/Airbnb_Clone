@@ -12,6 +12,7 @@ const validateListing = (req, res, next) => {
   if( error ){
     throw new ExpressError(400, error);
   }
+  next();
 };
 
 // REQUEST FOR LISTING DOWN ALL LOCATIONS IN DATABASE
@@ -48,7 +49,10 @@ router.post("/", validateListing, wrapAsync(async (req, res) => {
 router.get("/:id", wrapAsync(async (req, res) => {
   const {id: Id} = req.params;
   const listing = await Listing.findById(Id).populate("reviews");
-  console.log(listing);
+  if(!listing){
+    req.flash("error", "Listing is not found!");
+    return res.redirect("/listings");
+  }
   res.render("listings/show.ejs", { listing });
 }));
 
@@ -56,6 +60,10 @@ router.get("/:id", wrapAsync(async (req, res) => {
 router.get("/:id/edit", wrapAsync(async (req, res) => {
   let { id: Id } = req.params;
   const listing = await Listing.findById(Id.toString());
+  if(!listing){
+    req.flash("error", "Listing is not found!");
+    return res.redirect("/listings");
+  }
   res.render("listings/editForm.ejs", { listing }); 
 }));
 
@@ -63,6 +71,7 @@ router.get("/:id/edit", wrapAsync(async (req, res) => {
 router.put("/:id", wrapAsync(async (req, res) => {
   const {id: Id} = req.params;
   const listing = await Listing.findByIdAndUpdate(Id, req.body.listing);
+  req.flash("success", "Edited Successfully");
   res.redirect(`/listings/${Id}`);
 }));
 
@@ -70,6 +79,7 @@ router.put("/:id", wrapAsync(async (req, res) => {
 router.delete("/:id", wrapAsync(async (req, res) => {
   const {id: Id} = req.params;
   await Listing.findByIdAndDelete(Id);
+  req.flash("success", "Listing is deleted successfully");
   res.redirect("/listings");
 }));
 
