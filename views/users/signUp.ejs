@@ -1,0 +1,24 @@
+<%  layout("layouts/boilerplate") %>
+<div class="row" >
+  <div class="col-8 offset-2">
+     <h1>Sign-Up on Airbnb</h1>
+<form action="/signup" method="post" novalidate class="needs-validation">
+  <div class="mb-3" >
+    <label  class="form-label" for="username" >Username </label>
+    <input required class="form-control" type="text" id="username" name="user[username]" >
+    <div class="invalid-feedback">Please enter a valid username</div> <!-- This div we are adding for showing out message when required field is not filled-->
+  </div>
+  <div class="mb-3" >
+    <label  class="form-label" for="email" >Email</label>
+    <input  required class="form-control" type="email" id="email" name="user[email]" >
+    <div class="invalid-feedback">Please enter a valid email</div>
+  </div>
+  <div class="mb-3" >
+      <label  class="form-label" for="password" >Password</label>
+      <input class="form-control" type="password" id="password" name="user[password]" >
+      <div class="invalid-feedback">Please enter a valid password</div>
+    </div>
+  <button class="btn add-btn">Add</button>
+</form>
+  </div>
+</div>

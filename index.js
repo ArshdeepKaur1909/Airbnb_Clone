@@ -7,9 +7,13 @@ const mongoose = require("mongoose");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user.js");
 
-const listings = require("./routes/listings.js");
-const reviews = require("./routes/reviews.js");
+const listingsRouter = require("./routes/listings.js");
+const reviewsRouter = require("./routes/reviews.js");
+const userRouter = require("./routes/users.js");
 
 main()
 .then( (result) => {
@@ -48,9 +52,25 @@ app.use( (req, res, next) => {
   res.locals.errorMsg = req.flash("error");
   next();
 });
+app.use(passport.initialize()); // Middleware is used to initialize passport
+app.use(passport.session()); // Middleware to identify user as it browses from page to page and doesn't needs to login again & again for each page
+passport.use(new LocalStrategy(User.authenticate()));
 
-app.use("/listings", listings);
-app.use("/listings/:id/reviews", reviews);
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+app.use("/listings", listingsRouter);
+app.use("/listings/:id/reviews", reviewsRouter);
+app.use("/", userRouter);
+
+app.get("/demoUser", async (req, res) => {
+  const newUser = new User({
+    email: "demouser234@gmail.com",
+    username: "Demo User"
+  });
+  let user = await User.register(newUser, "helloUser"); // static method to register a new user instance with a given password. Also, Checks if username is unique --> Syntax: register(user, password, cb)
+  res.send(user);
+});
 
 // MIDDLEWARE FOR HANDLING RANDOM REQUESTS ON SERVER
 app.all(/.*/, (req, res, next) => {
