@@ -11,7 +11,7 @@ router.get("/signup", (req, res) => {
 
 router.post("/signup", wrapAsync( async (req,res) => {
   try{
-    const { username, email, password } = new User(req.body.user);
+    const { username, email, password } = req.body.user;
     const newUser = new User({email, username});
     await User.register(newUser, password);
     req.flash("success", "User is registered successfully");
@@ -26,9 +26,10 @@ router.get("/login", (req, res) => {
   res.render("users/loginIn.ejs");
 });
 
+// For passport.authenticate to work your form fields name must be like username, password not like user[username], user[password]
 router.post("/login", passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }),  wrapAsync( async (req, res) => {
   req.flash("success", "Welcome Back to Airbnb");
-  req.redirect("/listings");
+  res.redirect("/listings");
 }));
 
 module.exports = router;

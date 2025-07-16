@@ -5,12 +5,12 @@
 <form action="/login" method="post" novalidate class="needs-validation">
   <div class="mb-3" >
     <label  class="form-label" for="username" >Username </label>
-    <input required class="form-control" type="text" id="username" name="user[username]" >
+    <input required class="form-control" type="text" id="username" name="username" >
     <div class="invalid-feedback">Please enter a valid username</div> <!-- This div we are adding for showing out message when required field is not filled-->
   </div>
   <div class="mb-3" >
       <label  class="form-label" for="password" >Password</label>
-      <input class="form-control" type="password" id="password" name="user[password]" >
+      <input class="form-control" type="password" id="password" name="password" >
       <div class="invalid-feedback">Please enter a valid password</div>
     </div>
   <button class="btn add-btn">Log In</button>

@@ -4,6 +4,7 @@ const Listing = require("../models/listings.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const { listingsSchema } = require("../schema.js");
+const LoggedIn = require("../middleware.js");
 
 // CREATING A MIDDLEWARE FOR HANDLING LISTING'S SCHEMA VALIDATION
 const validateListing = (req, res, next) => {
@@ -23,7 +24,7 @@ router.get("/", wrapAsync(async (req, res) => {
 
 
 // REQUEST FOR PROVIDING A FORM FOR ADDING NEW LOCATION
-router.get("/new", function(req, res){ 
+router.get("/new",  LoggedIn, function(req, res){ 
   res.render("listings/addForm.ejs");
 });
 
@@ -57,7 +58,7 @@ router.get("/:id", wrapAsync(async (req, res) => {
 }));
 
 // REQUEST FOR PROVIDING FORM FOR EDITING LISTING DETAILS
-router.get("/:id/edit", wrapAsync(async (req, res) => {
+router.get("/:id/edit", LoggedIn, wrapAsync(async (req, res) => {
   let { id: Id } = req.params;
   const listing = await Listing.findById(Id.toString());
   if(!listing){
@@ -76,7 +77,7 @@ router.put("/:id", wrapAsync(async (req, res) => {
 }));
 
 // REQUEST FOR DELETING A PARTICULAR LOCATION
-router.delete("/:id", wrapAsync(async (req, res) => {
+router.delete("/:id", LoggedIn, wrapAsync(async (req, res) => {
   const {id: Id} = req.params;
   await Listing.findByIdAndDelete(Id);
   req.flash("success", "Listing is deleted successfully");
