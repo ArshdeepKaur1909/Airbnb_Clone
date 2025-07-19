@@ -3,6 +3,7 @@
 <div class="card mb-3" style="border: none;">
   <img src="<%= listing.image %>" class="card-img-top" alt="listing-image" style="height: 30rem;">
   <div class="card-body">
+    <p class="card-text"><i><%= listing.owner.username%></i></p>
     <p class="card-text description"><%= listing.description%></p>
     <p class="card-text"><small class="text-body-secondary">&#8377;<%= listing.price%></small></p>
     <p class="card-text"><small class="text-body-secondary"><%= listing.location%></small></p>

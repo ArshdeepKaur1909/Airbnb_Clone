@@ -41,6 +41,7 @@ router.post("/", validateListing, wrapAsync(async (req, res) => {
   //   throw new ExpressError(400, "Error from client-side");
   // }
   const newListing = new Listing(req.body.listing);
+  newListing.owner = req.user._id;
   await newListing.save();
   req.flash("success", "New Listing is created!");
   res.redirect("/listings");
@@ -49,7 +50,7 @@ router.post("/", validateListing, wrapAsync(async (req, res) => {
 // REQUEST FOR SHOWING PARTICULAR LISTING DETAIL ON CLICKING IT
 router.get("/:id", wrapAsync(async (req, res) => {
   const {id: Id} = req.params;
-  const listing = await Listing.findById(Id).populate("reviews");
+  const listing = await Listing.findById(Id).populate("reviews").populate("owner");
   if(!listing){
     req.flash("error", "Listing is not found!");
     return res.redirect("/listings");
