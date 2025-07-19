@@ -4,7 +4,7 @@ const Listing = require("../models/listings.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const { listingsSchema } = require("../schema.js");
-const LoggedIn = require("../middleware.js");
+const { LoggedIn } = require("../middleware.js");
 
 // CREATING A MIDDLEWARE FOR HANDLING LISTING'S SCHEMA VALIDATION
 const validateListing = (req, res, next) => {

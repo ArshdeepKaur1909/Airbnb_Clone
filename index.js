@@ -46,16 +46,18 @@ const sessionOptions = {
 }
 
 app.use(session( sessionOptions )); //Middleware for handling sessions on website
+app.use(passport.initialize()); // Middleware is used to initialize passport
+app.use(passport.session()); // Middleware to identify user as it browses from page to page and doesn't needs to login again & again for each page
+
 app.use(flash());
 app.use( (req, res, next) => {
   res.locals.successMsg = req.flash("success");
   res.locals.errorMsg = req.flash("error");
+  res.locals.currUser = req.user; // We are using to store user information in locals with each session interaction once logged
   next();
 });
-app.use(passport.initialize()); // Middleware is used to initialize passport
-app.use(passport.session()); // Middleware to identify user as it browses from page to page and doesn't needs to login again & again for each page
-passport.use(new LocalStrategy(User.authenticate()));
 
+passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 

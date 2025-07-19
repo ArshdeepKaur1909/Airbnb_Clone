@@ -4,6 +4,7 @@ const User = require("../models/user.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const passport = require("passport");
+const { saveRedirectUrl } = require("../middleware.js");
 
 // Route for sending out form when user wants to sign-up
 router.get("/signup", (req, res) => {
@@ -15,9 +16,14 @@ router.post("/signup", wrapAsync( async (req,res) => {
   try{
     const { username, email, password } = req.body.user;
     const newUser = new User({email, username});
-    await User.register(newUser, password);
+    const registeredUser = await User.register(newUser, password);
+    req.login(registeredUser, (err) => {
+      if(err){
+        next(err);
+      }
     req.flash("success", "User is registered successfully");
-    res.redirect("/listings");
+    res.redirect("/listings");  
+    }); // This function of req w.r.t. passport library automatically logins user on website as soon as user sign-up
   }catch(e){
     req.flash("error", e.message);
     res.redirect("/signup");
@@ -30,9 +36,10 @@ router.get("/login", (req, res) => {
 });
 
 // For passport.authenticate middleware to work your form fields name must be like username, password not like user[username], user[password]
-router.post("/login", passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }),  wrapAsync( async (req, res) => {
+router.post("/login", saveRedirectUrl, passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }),  wrapAsync( async (req, res) => {
   req.flash("success", "Welcome Back to Airbnb");
-  res.redirect("/listings");
+  req.session.redirectUrl = res.locals.redirectUrl || "/listings";
+  res.redirect(req.session.redirectUrl);
 }));
 
 //Route for to logout the user as soon as this request comes
