@@ -20,6 +20,7 @@ router.post("/", validateReview, wrapAsync( async (req, res) => {
   let { id: Id } = req.params;
   const listing = await Listing.findById(Id);
   const review = new Review(req.body.review);
+  review.author = req.user._id;
 
   listing.reviews.push(review._id);
 

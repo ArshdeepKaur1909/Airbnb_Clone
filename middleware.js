@@ -1,3 +1,6 @@
+const Listing = require("./models/listings.js");
+const Review = require("./models/review.js");
+
 const LoggedIn = (req, res, next) => {
   if( !req.isAuthenticated() ){  // console.log(req.user); req.user stores logined user info w.r.t. each session in form of cookies
     req.session.redirectUrl = req.originalUrl;
@@ -16,4 +19,19 @@ const saveRedirectUrl = (req, res, next) => {
   next();
 }
 
-module.exports = { LoggedIn,  saveRedirectUrl };
+//Creating Middleware function in order to check user editing listing is creator of listing or not
+const isOwner = async (req, res, next) => {
+  const {id: Id} = req.params;
+  const listing = await Listing.findById(Id);
+  if(!listing.owner._id.equals(res.locals.currUser._id)){
+    req.flash("error", "Not Allowed for editing this listing");
+    res.redirect(`/listings/${Id}`);
+  }else{ next(); }
+};
+
+//Creating Middleware function in order to check user deleting review is its actual user
+const isAuthor = async (req, res, next) => {
+  
+}
+
+module.exports = { LoggedIn,  saveRedirectUrl, isOwner, isAuthor};

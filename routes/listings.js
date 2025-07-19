@@ -4,7 +4,7 @@ const Listing = require("../models/listings.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const { listingsSchema } = require("../schema.js");
-const { LoggedIn } = require("../middleware.js");
+const { LoggedIn, isOwner } = require("../middleware.js");
 
 // CREATING A MIDDLEWARE FOR HANDLING LISTING'S SCHEMA VALIDATION
 const validateListing = (req, res, next) => {
@@ -50,7 +50,7 @@ router.post("/", validateListing, wrapAsync(async (req, res) => {
 // REQUEST FOR SHOWING PARTICULAR LISTING DETAIL ON CLICKING IT
 router.get("/:id", wrapAsync(async (req, res) => {
   const {id: Id} = req.params;
-  const listing = await Listing.findById(Id).populate("reviews").populate("owner");
+  const listing = await Listing.findById(Id).populate({path: "reviews", populate: { path: "author" }}).populate("owner");
   if(!listing){
     req.flash("error", "Listing is not found!");
     return res.redirect("/listings");
@@ -70,9 +70,9 @@ router.get("/:id/edit", LoggedIn, wrapAsync(async (req, res) => {
 }));
 
 // REQUEST FOR REDIRECTING TO SHOW.EJS PAGE AFTER EDITING
-router.put("/:id", wrapAsync(async (req, res) => {
+router.put("/:id", isOwner, wrapAsync(async (req, res) => {
   const {id: Id} = req.params;
-  const listing = await Listing.findByIdAndUpdate(Id, req.body.listing);
+  await Listing.findByIdAndUpdate(Id, req.body.listing);
   req.flash("success", "Edited Successfully");
   res.redirect(`/listings/${Id}`);
 }));
