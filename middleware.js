@@ -31,7 +31,14 @@ const isOwner = async (req, res, next) => {
 
 //Creating Middleware function in order to check user deleting review is its actual user
 const isAuthor = async (req, res, next) => {
-  
-}
+  const { id, reviewId } = req.params;
+  const review = await Review.findById(reviewId);  
+  if( !review.author._id.equals(res.locals.currUser._id) ){
+    req.flash("error", "Cannot delete this review");
+    res.redirect(`/listings/${id}`);
+  }else{
+    next();
+  }
+};
 
 module.exports = { LoggedIn,  saveRedirectUrl, isOwner, isAuthor};

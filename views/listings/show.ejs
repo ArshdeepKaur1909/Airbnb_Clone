@@ -41,7 +41,9 @@
               <i class="fa-solid fa-star"></i>
              <% } %>
               <p class="card-text"><i><%= review.author.username%></i></p>
-             <form method="post" action="/listings/<%= listing._id%>/reviews/<%= review._id%>?_method=DELETE"><button class="btn text-body-secondary" type="submit">Delete</button></form>
+             <% if(currUser) {%>
+               <form method="post" action="/listings/<%= listing._id%>/reviews/<%= review._id%>?_method=DELETE"><button class="btn text-body-secondary" type="submit">Delete</button></form>
+             <% } %> 
           </div>
         <% } %>
         </div>

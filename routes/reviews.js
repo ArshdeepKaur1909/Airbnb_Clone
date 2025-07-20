@@ -5,6 +5,7 @@ const Review = require("../models/review.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const { reviewsSchema } = require("../schema.js");
+const { isAuthor } = require("../middleware.js");
 
 // CREATING A MIDDLEWARE FOR HANDLING REVIEW'S SCHEMA VALIDATION
 const validateReview = (req, res, next) => {
@@ -32,7 +33,7 @@ router.post("/", validateReview, wrapAsync( async (req, res) => {
 }));
 
 // REQUEST FOR DELETION OF REVIEW ASSOCIATED WITH THAT DELETE BUTTON
-router.delete("/:reviewId", wrapAsync( async (req, res) => {
+router.delete("/:reviewId", isAuthor, wrapAsync( async (req, res) => {
   const {id: Id1, reviewId: Id2} = req.params;
   await Listing.findByIdAndUpdate(Id1, { $pull: { reviews: Id2 } });
   await Review.findByIdAndDelete(Id2);
