@@ -7,7 +7,8 @@ const { listingsSchema } = require("../schema.js");
 const { LoggedIn, isOwner } = require("../middleware.js");
 const listingController = require("../controllers/listings.js"); // accessed file having functions handling backend part of each request on "/listings" path
 const multer = require("multer");
-const upload = multer( { dest: "uploads/" } );
+const { storage } = require("../cloudConfig.js");
+const upload = multer( { storage } );
 
 
 // CREATING A MIDDLEWARE FOR HANDLING LISTING'S SCHEMA VALIDATION
@@ -24,7 +25,7 @@ const validateListing = (req, res, next) => {
 router.route("/")
 .get( wrapAsync(listingController.index) ) // REQUEST FOR LISTING DOWN ALL LOCATIONS IN DATABASE
 .post( /* validateListing, */ upload.single("listing[image]"), (req, res) => {
-  res.send(req.file); // req.file returns {"fieldname":"listing[image]","originalname":"chai.jpg","encoding":"7bit","mimetype":"image/jpeg","destination":"uploads/","filename":"0c1aed94842fef52dd143883596418c9","path":"uploads\\0c1aed94842fef52dd143883596418c9","size":516841} 
+  res.send(req.file); // req.file returns {"fieldname":"listing[image]","originalname":"chai.jpg","encoding":"7bit","mimetype":"image/jpeg","destination":"uploads/","filename":"0c1aed94842fef52dd143883596418c9","path":"uploads\\0c1aed94842fef52dd143883596418c9","size":516841} when images getting gets uploaded on uploads folder
 }/* wrapAsync(listingController.add) */ ) // REQUEST FOR ADDING NEW LOCATION IN DATABASE AND REDIRECTING AFTER THIS 
 
 // REQUEST FOR PROVIDING A FORM FOR ADDING NEW LOCATION
