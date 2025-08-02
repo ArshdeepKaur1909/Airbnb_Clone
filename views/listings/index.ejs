@@ -5,7 +5,7 @@
       <% for(const listing of Listings) {%>
         <a href="/listings/<%= listing._id%>">
           <div class="card col" style="border: none;">
-          <img src=<%= listing.image%> class="card-img-top" alt="listing-image">
+          <img src=<%= listing.image.url%> class="card-img-top" alt="listing-image">
           <div class="card-body">
            <p class="card-title"><%= listing.title%></p>
            <p class="card-price">&#8377;<%= listing.price.toLocaleString("en-IN")%></p>
