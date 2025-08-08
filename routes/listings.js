@@ -38,7 +38,7 @@ router.get("/new",  LoggedIn, listingController.new);
 
 router.route("/:id")
 .get( wrapAsync(listingController.show) ) // REQUEST FOR SHOWING PARTICULAR LISTING DETAIL ON CLICKING IT
-.put( isOwner, wrapAsync(listingController.editAndShow) ) // REQUEST FOR REDIRECTING TO SHOW.EJS PAGE AFTER EDITING
+.put( isOwner, upload.single("listing[image]"), wrapAsync(listingController.editAndShow) ) // REQUEST FOR REDIRECTING TO SHOW.EJS PAGE AFTER EDITING
 .delete( LoggedIn, wrapAsync(listingController.destroy) ) // REQUEST FOR DELETING A PARTICULAR LOCATION
 
 // REQUEST FOR PROVIDING FORM FOR EDITING LISTING DETAILS

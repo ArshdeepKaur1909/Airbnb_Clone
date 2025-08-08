@@ -55,9 +55,16 @@ module.exports.edit = async (req, res) => {
 
 module.exports.editAndShow = async (req, res) => {
   const {id: Id} = req.params;
+  const updatedData = {...req.body.listing};
+  if(req.file){
+  updatedData.image = updatedData.image || {};
+
   const url = req.file.path;
   const filename = req.file.filename;
-  await Listing.findByIdAndUpdate(Id, {...req.body.listing, image: {url: url, filename: filename}});
+  updatedData.image.url = url;
+  updatedData.image.filename = filename;
+  };
+  await Listing.findByIdAndUpdate(Id, updatedData);
   req.flash("success", "Edited Successfully");
   res.redirect(`/listings/${Id}`);
 };
